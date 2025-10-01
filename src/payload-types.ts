@@ -274,10 +274,8 @@ export interface Variant {
   product: string | Product;
   options: (string | VariantOption)[];
   inventory?: number | null;
-  priceInBGNEnabled?: boolean | null;
-  priceInBGN?: number | null;
-  priceInEUREnabled?: boolean | null;
-  priceInEUR?: number | null;
+  priceInUSDEnabled?: boolean | null;
+  priceInUSD?: number | null;
   updatedAt: string;
   createdAt: string;
   deletedAt?: string | null;
@@ -297,10 +295,8 @@ export interface Product {
     hasNextPage?: boolean;
     totalDocs?: number;
   };
-  priceInBGNEnabled?: boolean | null;
-  priceInBGN?: number | null;
-  priceInEUREnabled?: boolean | null;
-  priceInEUR?: number | null;
+  priceInUSDEnabled?: boolean | null;
+  priceInUSD?: number | null;
   title?: string | null;
   updatedAt: string;
   createdAt: string;
@@ -359,7 +355,7 @@ export interface Cart {
   purchasedAt?: string | null;
   status?: ('active' | 'purchased' | 'abandoned') | null;
   subtotal?: number | null;
-  currency?: ('BGN' | 'EUR') | null;
+  currency?: 'USD' | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -395,7 +391,7 @@ export interface Order {
   transactions?: (string | Transaction)[] | null;
   status?: OrderStatus;
   amount?: number | null;
-  currency?: ('BGN' | 'EUR') | null;
+  currency?: 'USD' | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -437,7 +433,7 @@ export interface Transaction {
   order?: (string | null) | Order;
   cart?: (string | null) | Cart;
   amount?: number | null;
-  currency?: ('BGN' | 'EUR') | null;
+  currency?: 'USD' | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -599,10 +595,8 @@ export interface VariantsSelect<T extends boolean = true> {
   product?: T;
   options?: T;
   inventory?: T;
-  priceInBGNEnabled?: T;
-  priceInBGN?: T;
-  priceInEUREnabled?: T;
-  priceInEUR?: T;
+  priceInUSDEnabled?: T;
+  priceInUSD?: T;
   updatedAt?: T;
   createdAt?: T;
   deletedAt?: T;
@@ -642,10 +636,8 @@ export interface ProductsSelect<T extends boolean = true> {
   enableVariants?: T;
   variantTypes?: T;
   variants?: T;
-  priceInBGNEnabled?: T;
-  priceInBGN?: T;
-  priceInEUREnabled?: T;
-  priceInEUR?: T;
+  priceInUSDEnabled?: T;
+  priceInUSD?: T;
   title?: T;
   updatedAt?: T;
   createdAt?: T;

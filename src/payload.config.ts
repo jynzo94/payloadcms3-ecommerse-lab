@@ -4,10 +4,10 @@ import { buildConfig } from 'payload'
 import { fileURLToPath } from 'url'
 import sharp from 'sharp'
 import { ecommercePlugin } from '@payloadcms/plugin-ecommerce'
+import { stripeAdapter } from '@payloadcms/plugin-ecommerce/payments/stripe'
 import { Users } from './collections/Users'
 import { Media } from './collections/Media'
 import { mongooseAdapter } from '@payloadcms/db-mongodb'
-import { stripeAdapter } from '@payloadcms/plugin-ecommerce/payments/stripe'
 import { ProductsCollection } from './collections/Products'
 
 const filename = fileURLToPath(import.meta.url)
@@ -32,23 +32,6 @@ export default buildConfig({
   sharp,
   plugins: [
     ecommercePlugin({
-      currencies: {
-        defaultCurrency: 'BGN',
-        supportedCurrencies: [
-          {
-            code: 'BGN',
-            label: 'Bulgarian Lev',
-            symbol: '#',
-            decimals: 2,
-          },
-          {
-            code: 'EUR',
-            label: 'Euro',
-            symbol: '€',
-            decimals: 2,
-          },
-        ],
-      },
       payments: {
         paymentMethods: [
           stripeAdapter({
@@ -69,21 +52,7 @@ export default buildConfig({
       },
       customers: { slug: 'users' },
       products: {
-        variants: {
-          // variantsCollectionOverride: ({ defaultCollection }) => {
-          //   return {
-          //     ...defaultCollection,
-          //     fields: [
-          //       ...defaultCollection.fields,
-          //       {
-          //         name: 'customField',
-          //         label: 'Custom Field',
-          //         type: 'text',
-          //       },
-          //     ],
-          //   }
-          // },
-        },
+        variants: true,
         productsCollectionOverride: ProductsCollection,
       },
     }),
