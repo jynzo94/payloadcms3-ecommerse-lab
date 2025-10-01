@@ -1,14 +1,14 @@
-// storage-adapter-import-placeholder
-import { sqliteAdapter } from '@payloadcms/db-sqlite'
-import { payloadCloudPlugin } from '@payloadcms/payload-cloud'
 import { lexicalEditor } from '@payloadcms/richtext-lexical'
 import path from 'path'
 import { buildConfig } from 'payload'
 import { fileURLToPath } from 'url'
 import sharp from 'sharp'
-
+import { ecommercePlugin } from '@payloadcms/plugin-ecommerce'
 import { Users } from './collections/Users'
 import { Media } from './collections/Media'
+import { mongooseAdapter } from '@payloadcms/db-mongodb'
+import { stripeAdapter } from '@payloadcms/plugin-ecommerce/payments/stripe'
+import { ProductsCollection } from './collections/Products'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -26,14 +26,66 @@ export default buildConfig({
   typescript: {
     outputFile: path.resolve(dirname, 'payload-types.ts'),
   },
-  db: sqliteAdapter({
-    client: {
-      url: process.env.DATABASE_URI || '',
-    },
+  db: mongooseAdapter({
+    url: process.env.DATABASE_URI!,
   }),
   sharp,
   plugins: [
-    payloadCloudPlugin(),
-    // storage-adapter-placeholder
+    ecommercePlugin({
+      currencies: {
+        defaultCurrency: 'BGN',
+        supportedCurrencies: [
+          {
+            code: 'BGN',
+            label: 'Bulgarian Lev',
+            symbol: '#',
+            decimals: 2,
+          },
+          {
+            code: 'EUR',
+            label: 'Euro',
+            symbol: '€',
+            decimals: 2,
+          },
+        ],
+      },
+      payments: {
+        paymentMethods: [
+          stripeAdapter({
+            secretKey: process.env.STRIPE_SECRET_KEY!,
+            publishableKey: process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!,
+            webhookSecret: process.env.STRIPE_WEBHOOKS_SIGNING_SECRET!,
+          }),
+        ],
+      },
+      access: {
+        adminOnly: () => true,
+        adminOnlyFieldAccess: () => true,
+        adminOrCustomerOwner: () => true,
+        adminOrPublishedStatus: () => true,
+        customerOnlyFieldAccess: () => true,
+        publicAccess: () => true,
+        authenticatedOnly: () => true,
+      },
+      customers: { slug: 'users' },
+      products: {
+        variants: {
+          // variantsCollectionOverride: ({ defaultCollection }) => {
+          //   return {
+          //     ...defaultCollection,
+          //     fields: [
+          //       ...defaultCollection.fields,
+          //       {
+          //         name: 'customField',
+          //         label: 'Custom Field',
+          //         type: 'text',
+          //       },
+          //     ],
+          //   }
+          // },
+        },
+        productsCollectionOverride: ProductsCollection,
+      },
+    }),
   ],
 })
